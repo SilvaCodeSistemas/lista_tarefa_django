@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+
+
+
+
+
+
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Minhas Tarefas</h2>
+    <a href="{% url 'criar_tarefa' %}" class="btn btn-primary">+ Nova Tarefa</a>
+  </div>
+
+  {% if tarefas %}
+    <div class="table-responsive">
+      <table class="table table-striped table-bordered align-middle">
+        <thead class="table-light">
+          <tr>
+            <th scope="col">Título</th>
+            <th scope="col">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for tarefa in tarefas %}
+          <tr>
+            <td>
+              {% if tarefa.concluida %}
+                <span class="text-decoration-line-through text-muted">{{ tarefa.titulo }}</span>
+              {% else %}
+                {{ tarefa.titulo }}
+              {% endif %}
+            </td>
+            <td class="">
+              {% if not tarefa.concluida %}
+                <a href="{% url 'concluir_tarefa' tarefa.id %}" class="btn btn-sm btn-success me-1"><i class="fa-solid fa-square-check"></i></a>
+              {% endif %}
+              <a href="{% url 'editar_tarefa' tarefa.id %}" class="btn btn-sm btn-warning me-1"><i class="fa-solid fa-pen-to-square"></i></a>
+              <form action="{% url 'excluir_tarefa' tarefa.id %}" method="post" class="d-inline">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-danger"><i class="fa-solid fa-trash-can"></i></button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="alert alert-info text-center" role="alert">
+      Você ainda não tem tarefas cadastradas.
+    </div>
+  {% endif %}
+</div>
+{% endblock %}
+
+
+

@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+      <!-- Breadcrumb -->
+      <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a href="{% url 'home' %}">Início</a></li>
+          <li class="breadcrumb-item active" aria-current="page">Editar Tarefa</li>
+        </ol>
+      </nav>
+
+      <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header bg-gradient-primary text-white">
+          <div class="d-flex align-items-center">
+            <i class="fas fa-edit me-2"></i>
+            <h4 class="mb-0">Editar Tarefa</h4>
+          </div>
+        </div>
+        
+        <div class="card-body p-4">
+          <form method="post" novalidate id="taskForm">
+            {% csrf_token %}
+            
+            {% for field in form %}
+              {% if field.name != 'concluida' %}
+                <div class="mb-4">
+                  <label for="{{ field.id_for_label }}" class="form-label fw-semibold">
+                    {{ field.label }}
+                    {% if field.field.required %}
+                      <span class="text-danger">*</span>
+                    {% endif %}
+                  </label>
+                  
+                  <div class="input-group">
+                    {% if field.name == 'title' %}
+                      <span class="input-group-text bg-light border-end-0">
+                        <i class="fas fa-heading text-muted"></i>
+                      </span>
+                      {{ field|add_class:"form-control border-start-0 ps-0"|attr:"placeholder:Digite o título da tarefa" }}
+                    {% elif field.name == 'description' %}
+                      <span class="input-group-text bg-light border-end-0 align-items-start pt-2">
+                        <i class="fas fa-align-left text-muted"></i>
+                      </span>
+                      {{ field|add_class:"form-control border-start-0 ps-0"|attr:"placeholder:Descreva os detalhes da tarefa"|attr:"rows:4" }}
+                    {% elif field.name == 'priority' %}
+                      <span class="input-group-text bg-light border-end-0">
+                        <i class="fas fa-flag text-muted"></i>
+                      </span>
+                      {{ field|add_class:"form-select border-start-0 ps-0" }}
+                    {% elif field.name == 'due_date' %}
+                      <span class="input-group-text bg-light border-end-0">
+                        <i class="fas fa-calendar-alt text-muted"></i>
+                      </span>
+                      {{ field|add_class:"form-control border-start-0 ps-0"|attr:"type:date" }}
+                    {% elif field.name == 'status' %}
+                      <span class="input-group-text bg-light border-end-0">
+                        <i class="fas fa-tasks text-muted"></i>
+                      </span>
+                      {{ field|add_class:"form-select border-start-0 ps-0" }}
+                    {% else %}
+                      {{ field|add_class:"form-control" }}
+                    {% endif %}
+                    
+                    <!-- Validation icons -->
+                    <div class="valid-feedback">
+                      <i class="fas fa-check"></i>
+                    </div>
+                    <div class="invalid-feedback">
+                      <i class="fas fa-exclamation-circle"></i>
+                    </div>
+                  </div>
+
+                  {% if field.help_text %}
+                    <div class="form-text">
+                      <i class="fas fa-info-circle me-1"></i>
+                      {{ field.help_text }}
+                    </div>
+                  {% endif %}
+
+                  {% for error in field.errors %}
+                    <div class="invalid-feedback d-block">
+                      <i class="fas fa-exclamation-triangle me-1"></i>
+                      {{ error }}
+                    </div>
+                  {% endfor %}
+                </div>
+              {% endif %}
+            {% endfor %}
+
+            <!-- Action buttons -->
+            <div class="d-flex flex-column flex-sm-row gap-2 justify-content-between mt-5">
+              <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg">
+                <i class="fas fa-times me-2"></i>
+                Cancelar
+              </a>
+              
+              <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary btn-lg" id="saveBtn">
+                  <i class="fas fa-save me-2"></i>
+                  <span class="btn-text">Salvar Alterações</span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Custom CSS -->
+<style>
+  .bg-gradient-primary {
+    background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  }
+  /* restante do seu CSS */
+</style>
+
+{% endblock %}
